@@ -1,0 +1,25 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>留言告示板</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>🌈 留言告示板</h1>
+    <form method="POST">
+      <input type="text" name="name" placeholder="你的名字（可空）">
+      <textarea name="message" placeholder="写下你的留言..." required></textarea>
+      <button type="submit">发布留言</button>
+    </form>
+
+    <div class="messages">
+      {% for msg in messages %}
+      <div class="message">{{ msg }}</div>
+      {% endfor %}
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
