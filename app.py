@@ -1,4 +1,4 @@
-﻿from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for
 import os
 
 app = Flask(__name__)
@@ -23,7 +23,7 @@ def trim_file_if_too_big():
             f.writelines(lines[mid:])
 
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/", methods=["GET", "POST", "HEAD"])
 def index():
     if request.method == "POST":
         name = request.form.get("name", "匿名")
@@ -41,6 +41,12 @@ def index():
         messages = []
 
     return render_template("index.html", messages=reversed(messages))
+
+
+# ✅ 可选：Render健康检查接口
+@app.route("/health")
+def health_check():
+    return "OK", 200
 
 
 if __name__ == "__main__":
