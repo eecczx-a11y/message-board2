@@ -1,17 +1,15 @@
 from flask import Flask, render_template, request, redirect, jsonify, session
-import sqlite3
-import os
-import datetime
+import sqlite3, os, datetime
 
 app = Flask(__name__)
 app.secret_key = "secret_key"
 
-# 数据库路径，保证在 Render 部署时也能找到
+# 使用绝对路径，保证 Render 容器中能找到
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB = os.path.join(BASE_DIR, "notice.db")
 
+# 初始化数据库和表
 def init_db():
-    """初始化数据库表"""
     conn = sqlite3.connect(DB)
     c = conn.cursor()
     c.execute('''
@@ -25,7 +23,7 @@ def init_db():
     conn.commit()
     conn.close()
 
-# ⭐ 在全局初始化数据库，保证 gunicorn 启动时也会执行
+# 确保数据库初始化在启动时就执行
 init_db()
 
 @app.route('/')
@@ -58,6 +56,6 @@ def api():
     conn.close()
     return jsonify(data)
 
+# 生产环境用 Gunicorn，不走 __main__，但本地调试可用
 if __name__ == "__main__":
-    # 本地调试用
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
